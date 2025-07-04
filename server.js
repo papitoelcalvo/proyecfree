@@ -4,35 +4,39 @@ var cors = require("cors");
 
 app.use(cors({ optionsSuccessStatus: 200 }));
 
-app.get('/', (req, res) => {
-  res.send('Timestamp Microservice is running');
+app.get("/", (req, res) => {
+  res.send("Timestamp Microservice is running");
 });
 
-// Ruta principal: /api/:date?
-app.get('/api/:date', (req, res) => {
-  let dateInput = req.params.date;
+// ✅ Ruta sin parámetro: devuelve hora actual
+app.get("/api", (req, res) => {
+  const date = new Date();
+  res.json({
+    unix: date.getTime(),
+    utc: date.toUTCString(),
+  });
+});
 
+// ✅ Ruta con parámetro
+app.get("/api/:date", (req, res) => {
+  const dateInput = req.params.date;
   let date;
 
-  if (!dateInput) {
-    // Sin parámetro -> usar fecha actual
-    date = new Date();
+  // Si es un número (timestamp), conviértelo a int y pásalo al constructor
+  if (!isNaN(dateInput) && /^\d+$/.test(dateInput)) {
+    date = new Date(parseInt(dateInput));
   } else {
-    // Revisar si es un timestamp (solo dígitos)
-    if (!isNaN(dateInput)) {
-      date = new Date(parseInt(dateInput));
-    } else {
-      date = new Date(dateInput);
-    }
+    date = new Date(dateInput);
   }
 
+  // Verifica si es una fecha válida
   if (date.toString() === "Invalid Date") {
     return res.json({ error: "Invalid Date" });
   }
 
-  return res.json({
+  res.json({
     unix: date.getTime(),
-    utc: date.toUTCString()
+    utc: date.toUTCString(),
   });
 });
 
