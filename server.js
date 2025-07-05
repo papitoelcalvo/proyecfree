@@ -4,7 +4,7 @@ var cors = require("cors");
 
 app.use(cors({ optionsSuccessStatus: 200 }));
 
-app.get("/", (req, res) => {
+/*app.get("/", (req, res) => {
   res.send("Timestamp Microservice is running");
 });
 
@@ -37,6 +37,21 @@ app.get("/api/:date", (req, res) => {
   res.json({
     unix: date.getTime(),
     utc: date.toUTCString(),
+  });
+});*/
+
+app.get("/", (req, res) => {
+  res.send("Header parser microservice");
+});
+
+app.get("/api/whoami", (req, res) => {
+  res.json({
+    ipadress: req.ip,
+    lenguage: req.headers["accept-language"],
+    software:
+      req.headers[
+        "user-agent"
+      ],
   });
 });
 
